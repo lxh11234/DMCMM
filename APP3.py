@@ -79,7 +79,7 @@ if st.button("Predict"):
 
     # SHAP Explanation
     st.subheader("SHAP Force Plot Explanation")
-    explainer_shap = shap.TreeExplainer(model)
+    explainer_shap = shap.KernelExplainer(model.predict_proba, X_test)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns=feature_names))
     
     # Display the SHAP force plot for the predicted class
@@ -96,7 +96,7 @@ if st.button("Predict"):
     lime_explainer = LimeTabularExplainer(
         training_data=X_test.values,
         feature_names=X_test.columns.tolist(),
-        class_names=['Not sick', 'Sick'],  # Adjust class names to match your classification task
+        class_names=['sick', 'Not sick'],  # Adjust class names to match your classification task
         mode='classification'
     )
     
