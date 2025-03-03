@@ -40,7 +40,7 @@ if st.button("Predict"):
     predicted_proba = model.predict_proba(features)[0]
 
     # Display prediction results
-    st.write(f"**Predicted Class:** {predicted_class} (1: Disease, 0: No Disease)")
+    st.write(f"**Predicted Class:** {predicted_class} (0: No Disease, 1: Disease)")
     st.write(f"**Prediction Probabilities:** {predicted_proba}")
 
     # Generate advice based on prediction results
@@ -61,46 +61,35 @@ if st.button("Predict"):
 
     st.write(advice)
 
-    # SHAP Explanation
+   # SHAP Explanation
     st.subheader("SHAP Force Plot Explanation")
-    explainer_shap = shap.KernelExplainer(model.predict_proba, X_test[feature_names])
+    explainer_shap = shap.KernelExplainer(model.predict_proba, X_test)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns=feature_names))
-
+    
     # Display the SHAP force plot for the predicted class
     if predicted_class == 1:
-        shap_plot = shap.force_plot(
-            explainer_shap.expected_value[1],
-            shap_values[1][0],  # SHAP values for the positive class
-            feature_values,
-            feature_names=feature_names,
-            matplotlib=False
-        )
+        shap.force_plot(explainer_shap.expected_value[1], shap_values[:,:,1], pd.DataFrame([feature_values], columns=feature_names), matplotlib=True)
     else:
-        shap_plot = shap.force_plot(
-            explainer_shap.expected_value[0],
-            shap_values[0][0],  # SHAP values for the negative class
-            feature_values,
-            feature_names=feature_names,
-            matplotlib=False
-        )
+        shap.force_plot(explainer_shap.expected_value[0], shap_values[:,:,0], pd.DataFrame([feature_values], columns=feature_names), matplotlib=True)
 
-    # Save the SHAP plot as HTML and display it in Streamlit
-    shap.save_html("shap_force_plot.html", shap_plot)
-    st.components.v1.html(open("shap_force_plot.html", "r").read(), height=400)
+    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
+    st.image("shap_force_plot.png", caption='SHAP Force Plot Explanation')
 
-    # LIME Explanation (optional)
+    # LIME Explanation
     st.subheader("LIME Explanation")
     lime_explainer = LimeTabularExplainer(
-        X_test[feature_names].values,
-        feature_names=feature_names,
-        class_names=["No Disease", "Disease"],
-        mode="classification"
+        training_data=X_test.values,
+        feature_names=X_test.columns.tolist(),
+        class_names=['sick', 'Not sick'],  # Adjust class names to match your classification task
+        mode='classification'
     )
+    
+    # Explain the instance
     lime_exp = lime_explainer.explain_instance(
-        np.array(feature_values),
-        model.predict_proba,
-        num_features=len(feature_names)
+        data_row=features.flatten(),
+        predict_fn=model.predict_proba
     )
 
-    # Display LIME explanation
-    st.write(lime_exp.as_list())
+    # Display the LIME explanation without the feature value table
+    lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
+    st.components.v1.html(lime_html, height=800, scrolling=True)
