@@ -35,13 +35,13 @@ SCR = st.number_input("SCR:", min_value=0.0, max_value=1000.0, value=5.5)
 AST = st.number_input("AST:", min_value=0, max_value=1000, value=20)
 
 # Cholesterol (chol): numerical input
-ACR = st.number_input("ACR:", min_value=0, max_value=10000, value=157)
+ACR = st.number_input("ACR:", min_value=0, max_value=10000, value=160)
 
 # Maximum Heart Rate Achieved (thalach): numerical input
 PLT = st.number_input("PLT:", min_value=0, max_value=10000, value=157)
 
 # ST Depression Induced by Exercise (oldpeak): numerical input
-ACR = st.number_input("ACR:", min_value=0, max_value=10000, value=157)
+Vfa = st.number_input("Vfa:", min_value=0, max_value=10000, value=90)
 
 
 
