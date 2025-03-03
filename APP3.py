@@ -52,8 +52,8 @@ features = np.array([feature_values])
 
 if st.button("Predict"):
     # Predict class and probabilities
-    predicted_class = model.predict(features)[0]
-    predicted_proba = model.predict_proba(features)[0]
+    predicted_class = model.predict(features)[1]
+    predicted_proba = model.predict_proba(features)[1]
 
     # Display prediction results
     st.write(f"**Predicted Class:** {predicted_class} (1: Disease, 0: No Disease)")
