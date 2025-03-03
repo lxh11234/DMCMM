@@ -47,7 +47,7 @@ Vfa = st.number_input("Vfa:", min_value=0, max_value=10000, value=90)
 
 
 # Process inputs and make predictions
-feature_values = ["Age", "HbAlc", "PBG", "METS_IR", "BUN", "SCR", "AST", "ACR", "PLT","Vfa"]
+feature_values = [Age, HbAlc, PBG, METS_IR, BUN, SCR, AST, ACR, PLT, Vfa]
 features = np.array([feature_values])
 
 if st.button("Predict"):
