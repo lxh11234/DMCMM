@@ -5,22 +5,6 @@ import pandas as pd
 import shap
 import matplotlib.pyplot as plt
 from lime.lime_tabular import LimeTabularExplainer
-import streamlit as st
-import joblib
-import numpy as np
-import pandas as pd
-import shap
-import matplotlib.pyplot as plt
-from lime.lime_tabular import LimeTabularExplainer
-
-# Load the new model
-import streamlit as st
-import joblib
-import numpy as np
-import pandas as pd
-import shap
-import matplotlib.pyplot as plt
-from lime.lime_tabular import LimeTabularExplainer
 
 # Load the new model
 model = joblib.load('stacking_classifier_model.pkl')
