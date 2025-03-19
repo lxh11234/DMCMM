@@ -12,15 +12,15 @@ model = joblib.load('stacking_classifier_model.pkl')
 # Load the test data from X_test.csv to create LIME explainer
 X_test = pd.read_csv('X_test.csv')
 
-Duration_of_diabetes = {
+# Define the mapping for Duration_of_diabetes
+duration_mapping = {
     1: '≤1year',
     2: '1-5years',
     3: '＞5years'
 }
 
-
 # Define feature names from the new dataset
-feature_names = ["Age",'Duration_of_diabetes',"SCII",'PLT','AST_ALT',"PBG","HbAlc","VFA","METS_IR"]
+feature_names = ["Age", 'Duration_of_diabetes', "SCII", 'PLT', 'AST_ALT', "PBG", "HbAlc", "VFA", "METS_IR"]
 
 # Streamlit user interface
 st.title("CMM Predictor")
@@ -32,7 +32,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Input Features")
     Age = st.number_input("Age:", min_value=0, max_value=120, value=41)  # 统一为浮点数
-    Duration_of_diabetes = st.selectbox("Duration.of.diabetes:", options=list(Duration_of_diabetes.keys()), format_func=lambda x: Duration_of_diabetes[x])
+    Duration_of_diabetes = st.selectbox("Duration of diabetes:", options=list(duration_mapping.keys()), format_func=lambda x: duration_mapping[x])
     SCII = st.selectbox("SCII (NO, YES):", options=[0, 1], format_func=lambda x: 'NO' if x == 0 else 'YES')
     PLT = st.number_input("PLT:", min_value=0.0, max_value=10000.0, value=157.0)  # 统一为浮点数
     AST_ALT = st.number_input("AST/ALT:", min_value=0.00, max_value=1000.00, value=1.00)  # 已经是浮点数
@@ -40,9 +40,10 @@ with col1:
     HbAlc = st.number_input("HbAlc:", min_value=0.0, max_value=50.0, value=6.0)
     VFA = st.number_input("VFA:", min_value=0.0, max_value=10000.0, value=90.0)  # 统一为浮点数
     METS_IR = st.number_input("METS_IR:", min_value=0.00, max_value=500.00, value=22.00)
+
 with col2:
     st.subheader("Prediction Results")
-    feature_values = [Age,Duration_of_diabetes,SCII,PLT,AST_ALT,PBG,HbAlc,VFA,METS_IR]
+    feature_values = [Age, Duration_of_diabetes, SCII, PLT, AST_ALT, PBG, HbAlc, VFA, METS_IR]
     features = np.array([feature_values]).reshape(1, -1)
 
     if st.button("Predict"):
@@ -74,7 +75,7 @@ with col2:
 
         # SHAP Explanation
         st.subheader("SHAP Force Plot Explanation")
-        explainer_shap = shap.KernelExplainer(model.predict_proba, X_test)
+        explainer_shap = shap.KernelExplainer(model.predict, X_test)
         shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns=feature_names))
 
         # Display the SHAP force plot for the predicted class
@@ -99,7 +100,7 @@ with col2:
 
         # Explain the instance
         lime_exp = lime_explainer.explain_instance(
-            data_row=features.flatten(),
+            data_row=features[0],  # Use the first row of features
             predict_fn=model.predict_proba
         )
 
