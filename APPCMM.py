@@ -39,7 +39,7 @@ METS_IR = st.number_input("METS_IR:", min_value=0.00, max_value=500.00, value=22
 
 # Process inputs and make predictions in the right column
 feature_values = [Age,Duration_of_diabetes,SCII,PLT,AST_ALT,PBG,HbAlc,VFA,METS_IR]
-features = np.array([feature_values])
+features = np.array([feature_values]).reshape(1, -1)
 
 if st.button("Predict"):
     # 预测类别和概率
